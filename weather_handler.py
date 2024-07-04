@@ -1,16 +1,24 @@
 import logging
 import aiohttp
-from urllib.parse import quote
+import json
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
+from urllib.parse import quote
+
+# Загрузка конфигурации из файла config.json с явным указанием кодировки utf-8
+with open('config.json', 'r', encoding='utf-8') as config_file:
+    config = json.load(config_file)
+
+WEATHER_API_KEY = config['WEATHER_API_KEY']
+DEFAULT_CITY_NAME = config['DEFAULT_CITY_NAME']
 
 router = Router()
 
 # Функция для получения прогноза погоды
-async def get_weather(city_name, weather_api_key):
+async def get_weather(city_name):
     city_name_encoded = quote(city_name, safe='')
-    url = f"http://api.weatherapi.com/v1/current.json?key={weather_api_key}&q={city_name_encoded}&lang=ru"
+    url = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q={city_name_encoded}&lang=ru"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             logging.debug(f"Запрос к WeatherAPI: {response.url}")
@@ -32,10 +40,9 @@ async def get_weather(city_name, weather_api_key):
 async def send_weather(message: Message):
     logging.info("Получена команда /weather")
     args = message.text.split(' ', 1)
-    city_name = args[1] if len(args) > 1 else "Москва"  # Установите значение по умолчанию
+    city_name = args[1] if len(args) > 1 else DEFAULT_CITY_NAME
 
-    weather_api_key = "YOUR_WEATHER_API_KEY"  # Укажите ваш ключ API
-    weather, icon_url = await get_weather(city_name, weather_api_key)
+    weather, icon_url = await get_weather(city_name)
     if weather and icon_url:
         logging.info(f"Отправка прогноза погоды: {weather}")
         await message.answer_photo(photo=icon_url, caption=weather)

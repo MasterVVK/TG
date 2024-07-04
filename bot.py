@@ -22,6 +22,7 @@ with open('config.json', 'r', encoding='utf-8') as config_file:
     config = json.load(config_file)
 
 API_TOKEN = config['API_TOKEN']
+DEFAULT_CITY_NAME = config['DEFAULT_CITY_NAME']
 
 # Настройка логирования
 logging.basicConfig(
