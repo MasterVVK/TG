@@ -40,31 +40,49 @@ async def send_links(message: Message):
     await message.reply("Выберите ссылку:", reply_markup=inline_keyboard)
 
 # Команда /dynamic для отображения динамической инлайн-кнопки
+from aiogram import Router, F
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import Command
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+import logging
+
+# Создание маршрутизатора
+router = Router()
+
+
+# Команда /dynamic
 @router.message(Command("dynamic"))
-async def send_dynamic_keyboard(message: Message):
+async def send_dynamic_menu(message: Message):
     logging.info("Получена команда /dynamic")
-    inline_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Показать больше", callback_data="show_more")]
-    ])
-    await message.reply("Нажмите на кнопку:", reply_markup=inline_keyboard)
 
-# Обработчик нажатия на кнопку "Показать больше"
-@router.callback_query(lambda c: c.data == "show_more")
-async def handle_show_more(callback_query: CallbackQuery):
+    # Создание инлайн-кнопки "Показать больше"
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Показать больше", callback_data="show_more")
+    keyboard = builder.as_markup()
+
+    await message.reply("Выберите опцию:", reply_markup=keyboard)
+
+
+# Обработчик для инлайн-кнопки "Показать больше"
+@router.callback_query(F.data == "show_more")
+async def show_more_options(callback_query: CallbackQuery):
     logging.info("Нажата кнопка Показать больше")
-    inline_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Опция 1", callback_data="option_1")],
-        [InlineKeyboardButton(text="Опция 2", callback_data="option_2")]
-    ])
-    await callback_query.message.edit_reply_markup(reply_markup=inline_keyboard)
 
-# Обработчики нажатий на кнопки "Опция 1" и "Опция 2"
-@router.callback_query(lambda c: c.data == "option_1")
-async def handle_option_1(callback_query: CallbackQuery):
-    logging.info("Нажата кнопка Опция 1")
-    await callback_query.message.answer("Вы выбрали Опцию 1")
+    # Создание новых инлайн-кнопок "Опция 1" и "Опция 2"
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Опция 1", callback_data="option_1")
+    builder.button(text="Опция 2", callback_data="option_2")
+    keyboard = builder.as_markup()
 
-@router.callback_query(lambda c: c.data == "option_2")
-async def handle_option_2(callback_query: CallbackQuery):
-    logging.info("Нажата кнопка Опция 2")
-    await callback_query.message.answer("Вы выбрали Опцию 2")
+    await callback_query.message.edit_text("Выберите опцию:", reply_markup=keyboard)
+
+
+# Обработчик для инлайн-кнопок "Опция 1" и "Опция 2"
+@router.callback_query(F.data.in_({"option_1", "option_2"}))
+async def handle_option(callback_query: CallbackQuery):
+    option = callback_query.data
+    logging.info(f"Нажата кнопка {option.replace('_', ' ').title()}")
+
+    await callback_query.message.answer(f"Вы выбрали {option.replace('_', ' ').title()}")
+    await callback_query.answer()  # Закрыть всплывающее уведомление
+
