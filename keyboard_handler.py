@@ -64,6 +64,30 @@ async def send_dynamic_menu(message: Message):
 
 
 # Обработчик для инлайн-кнопки "Показать больше"
+from aiogram import Router, F
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import Command
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+import logging
+
+# Создание маршрутизатора
+router = Router()
+
+
+# Команда /dynamic
+@router.message(Command("dynamic"))
+async def send_dynamic_menu(message: Message):
+    logging.info("Получена команда /dynamic")
+
+    # Создание инлайн-кнопки "Показать больше"
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Показать больше", callback_data="show_more")
+    keyboard = builder.as_markup()
+
+    await message.reply("Выберите опцию:", reply_markup=keyboard)
+
+
+# Обработчик для инлайн-кнопки "Показать больше"
 @router.callback_query(F.data == "show_more")
 async def show_more_options(callback_query: CallbackQuery):
     logging.info("Нажата кнопка Показать больше")
@@ -81,8 +105,10 @@ async def show_more_options(callback_query: CallbackQuery):
 @router.callback_query(F.data.in_({"option_1", "option_2"}))
 async def handle_option(callback_query: CallbackQuery):
     option = callback_query.data
-    logging.info(f"Нажата кнопка {option.replace('_', ' ').title()}")
+    option_text = option.replace('option_1', 'Опция 1').replace('option_2', 'Опция 2')
+    logging.info(f"Нажата кнопка {option_text}")
 
-    await callback_query.message.answer(f"Вы выбрали {option.replace('_', ' ').title()}")
+    await callback_query.message.answer(f"Вы выбрали {option_text}")
     await callback_query.answer()  # Закрыть всплывающее уведомление
+
 
