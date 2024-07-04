@@ -9,12 +9,13 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 from student_registration import router as student_router  # Импорт маршрутизатора
-from translator_handler import router as translator_router  # Импорт маршрутизатора для перевода
 from keyboard_handler import router as keyboard_router, keyboard  # Импорт маршрутизатора для клавиатуры и кнопок
 from weather_handler import router as weather_router  # Импорт маршрутизатора для погоды
 from common_commands import router as common_router  # Импорт маршрутизатора для общих команд
 from voice_handler import router as voice_router  # Импорт маршрутизатора для голосовых сообщений
 from photo_handler import router as photo_router  # Импорт маршрутизатора для фотографий
+from translator_handler import router as translator_router  # Импорт маршрутизатора для перевода
+import aiohttp  # Импорт aiohttp для асинхронных запросов
 
 # Загрузка конфигурации из файла config.json с явным указанием кодировки utf-8
 with open('config.json', 'r', encoding='utf-8') as config_file:
@@ -40,11 +41,11 @@ bot = Bot(
 dp = Dispatcher(storage=MemoryStorage())
 dp.include_router(keyboard_router)  # Включение маршрутизатора для клавиатуры и кнопок
 dp.include_router(student_router)  # Включение маршрутизатора
-dp.include_router(translator_router)  # Включение маршрутизатора для перевода
 dp.include_router(weather_router)  # Включение маршрутизатора для погоды
 dp.include_router(common_router)  # Включение маршрутизатора для общих команд
 dp.include_router(voice_router)  # Включение маршрутизатора для голосовых сообщений
 dp.include_router(photo_router)  # Включение маршрутизатора для фотографий
+dp.include_router(translator_router)  # Включение маршрутизатора для перевода
 
 # Команда /start с меню
 @dp.message(Command("start"))
