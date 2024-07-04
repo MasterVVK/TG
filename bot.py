@@ -51,7 +51,7 @@ dp.include_router(translator_router)  # Включение маршрутиза�
 @dp.message(Command("start"))
 async def send_welcome(message: Message):
     logging.info("Получена команда /start")
-    await message.reply("Привет! Я бот, созданный с помощью Aiogram. Используйте команду /weather <город> для получения прогноза погоды.", reply_markup=keyboard)
+    await message.reply("Привет! Я бот, созданный с помощью Aiogram. Используйте команду /weather &lt;город&gt; для получения прогноза погоды.", reply_markup=keyboard)
 
 async def on_shutdown(bot: Bot):
     await bot.session.close()
