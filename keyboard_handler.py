@@ -1,7 +1,9 @@
-import logging
 from aiogram import Router, F
-from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import Command
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+import logging
 
 router = Router()
 
@@ -40,41 +42,7 @@ async def send_links(message: Message):
     await message.reply("Выберите ссылку:", reply_markup=inline_keyboard)
 
 # Команда /dynamic для отображения динамической инлайн-кнопки
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-import logging
 
-# Создание маршрутизатора
-router = Router()
-
-
-# Команда /dynamic
-@router.message(Command("dynamic"))
-async def send_dynamic_menu(message: Message):
-    logging.info("Получена команда /dynamic")
-
-    # Создание инлайн-кнопки "Показать больше"
-    builder = InlineKeyboardBuilder()
-    builder.button(text="Показать больше", callback_data="show_more")
-    keyboard = builder.as_markup()
-
-    await message.reply("Выберите опцию:", reply_markup=keyboard)
-
-
-# Обработчик для инлайн-кнопки "Показать больше"
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-import logging
-
-# Создание маршрутизатора
-router = Router()
-
-
-# Команда /dynamic
 @router.message(Command("dynamic"))
 async def send_dynamic_menu(message: Message):
     logging.info("Получена команда /dynamic")
@@ -110,5 +78,4 @@ async def handle_option(callback_query: CallbackQuery):
 
     await callback_query.message.answer(f"Вы выбрали {option_text}")
     await callback_query.answer()  # Закрыть всплывающее уведомление
-
 
