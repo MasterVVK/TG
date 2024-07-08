@@ -16,6 +16,10 @@ from voice_handler import router as voice_router  # Импорт маршрут�
 from photo_handler import router as photo_router  # Импорт маршрутизатора для фотографий
 from translator_handler import router as translator_router  # Импорт маршрутизатора для перевода
 import aiohttp  # Импорт aiohttp для асинхронных запросов
+from cat_api_handler import router as cat_router  # Импорт маршрутизатора для The Cat API
+from nasa_api_handler import router as nasa_router  # Импорт маршрутизатора для NASA API
+from news_vc_handler import router as news_vc_router  # Импорт маршрутизатора для новостей VC.ru
+from random_recipe_handler import router as recipe_router  # Импорт маршрутизатора для случайных рецептов
 
 # Загрузка конфигурации из файла config.json с явным указанием кодировки utf-8
 with open('config.json', 'r', encoding='utf-8') as config_file:
@@ -46,6 +50,11 @@ dp.include_router(weather_router)  # Включение маршрутизато
 dp.include_router(common_router)  # Включение маршрутизатора для общих команд
 dp.include_router(voice_router)  # Включение маршрутизатора для голосовых сообщений
 dp.include_router(photo_router)  # Включение маршрутизатора для фотографий
+dp.include_router(cat_router)  # Включение маршрутизатора для The Cat API
+dp.include_router(nasa_router)  # Включение маршрутизатора для NASA API
+dp.include_router(news_vc_router)  # Включение маршрутизатора для новостей VC.ru
+dp.include_router(recipe_router)  # Включение маршрутизатора для случайных рецептов
+dp.include_router(translator_router)  # Включение маршрутизатора для перевода
 dp.include_router(translator_router)  # Включение маршрутизатора для перевода
 
 # Команда /start с меню
