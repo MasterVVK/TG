@@ -26,6 +26,7 @@ async def send_nasa_apod(message: Message):
             logging.debug(f"Запрос к NasaAPI: {response.url}")
             if response.status == 200:
                 data = await response.json()
+                logging.debug(f"Ответ от NasaAPI: {data}")
                 apod_url = data['url']
                 title = data['title']
                 explanation = data['explanation']
