@@ -16,16 +16,13 @@ with open('config.json', 'r', encoding='utf-8') as config_file:
 CAT_API_KEY = config['CAT_API_KEY']
 
 async def get_cat_image():
-    url = f'https://api.thecatapi.com/v1/images/search?api_key={CAT_API_KEY}&include_breeds=true'
+    url = 'https://api.thecatapi.com/v1/images/search'
+    params = {'api_key': CAT_API_KEY, 'include_breeds': 'true'}
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            logging.debug(f"Запрос к TheCatAPI: {response.url}")
+        async with session.get(url, params=params) as response:
             if response.status == 200:
-                data = await response.json()
-                logging.debug(f"Ответ от TheCatAPI: {data}")
-                return data
+                return await response.json()
             else:
-                logging.error(f"Ошибка при запросе к TheCatAPI: {response.status}")
                 return None
 
 @router.message(Command("cat"))
