@@ -8,7 +8,7 @@ API_URL = "https://api.thecatapi.com/v1/images/search?api_key=test_api_key&inclu
 @pytest.mark.asyncio
 async def test_get_cat_image_success():
     with aioresponses() as m:
-        m.get(API_URL, payload=[{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}])
+        m.get(API_URL, status=200, payload=[{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}])
 
         result = await get_cat_image()
         assert result == [{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}]
