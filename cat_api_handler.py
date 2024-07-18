@@ -16,10 +16,9 @@ with open('config.json', 'r', encoding='utf-8') as config_file:
 CAT_API_KEY = config['CAT_API_KEY']
 
 async def get_cat_image():
-    url = 'https://api.thecatapi.com/v1/images/search'
-    params = {'api_key': CAT_API_KEY, 'include_breeds': 'true'}
+    url = f'https://api.thecatapi.com/v1/images/search?api_key={CAT_API_KEY}&include_breeds=true'
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params) as response:
+        async with session.get(url) as response:
             if response.status == 200:
                 return await response.json()
             else:
