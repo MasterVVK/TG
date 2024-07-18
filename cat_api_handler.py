@@ -1,21 +1,18 @@
-# cat_api_handler.py
-
 import aiohttp
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
 import json
-import logging
 
 router = Router()
 
-# Загрузка конфигурации из файла config.json
-with open('config.json', 'r', encoding='utf-8') as config_file:
-    config = json.load(config_file)
-
-CAT_API_KEY = config['CAT_API_KEY']
+def load_config():
+    with open('config.json', 'r', encoding='utf-8') as config_file:
+        return json.load(config_file)
 
 async def get_cat_image():
+    config = load_config()
+    CAT_API_KEY = config['CAT_API_KEY']
     url = f'https://api.thecatapi.com/v1/images/search?api_key={CAT_API_KEY}&include_breeds=true'
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
