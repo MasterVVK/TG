@@ -16,8 +16,11 @@ async def get_cat_image():
     url = f'https://api.thecatapi.com/v1/images/search?api_key={CAT_API_KEY}&include_breeds=true'
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
+            print(f"Response status: {response.status}")  # Отладочное сообщение
             if response.status == 200:
-                return await response.json()
+                data = await response.json()
+                print(f"Response data: {data}")  # Отладочное сообщение
+                return data
             else:
                 return None
 

@@ -1,30 +1,25 @@
 import pytest
-from unittest.mock import AsyncMock
+from aioresponses import aioresponses
 from cat_api_handler import get_cat_image, send_cat_image
 from aiogram.types import Message
 
 API_URL = "https://api.thecatapi.com/v1/images/search?api_key=test_api_key&include_breeds=true"
 
 @pytest.mark.asyncio
-async def test_get_cat_image_success(mocker):
-    mock_response = AsyncMock()
-    mock_response.status = 200
-    mock_response.json.return_value = [{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}]
+async def test_get_cat_image_success():
+    with aioresponses() as m:
+        m.get(API_URL, payload=[{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}])
 
-    mock_get = mocker.patch('aiohttp.ClientSession.get', return_value=mock_response)
-    result = await get_cat_image()
-    mock_get.assert_called_once_with(API_URL)
-    assert result == [{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}]
+        result = await get_cat_image()
+        assert result == [{"url": "https://example.com/cat.jpg", "breeds": [{"name": "BreedName", "description": "BreedDescription"}]}]
 
 @pytest.mark.asyncio
-async def test_get_cat_image_failure(mocker):
-    mock_response = AsyncMock()
-    mock_response.status = 404
+async def test_get_cat_image_failure():
+    with aioresponses() as m:
+        m.get(API_URL, status=404)
 
-    mock_get = mocker.patch('aiohttp.ClientSession.get', return_value=mock_response)
-    result = await get_cat_image()
-    mock_get.assert_called_once_with(API_URL)
-    assert result is None
+        result = await get_cat_image()
+        assert result is None
 
 @pytest.mark.asyncio
 async def test_send_cat_image_success(mocker):
